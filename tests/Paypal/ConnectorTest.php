@@ -6,18 +6,18 @@ class Paypal_ConnectorTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers Paypal_Connector::__construct
-     * @covers Paypal_Connector::getClient
      * @covers Paypal_Connector::getConfiguration
+     * @covers Paypal_Connector::getClient
      * @covers Paypal_Connector::getEndpointUrl
      *
      * @dataProvider stuffProvider
      */
-    public function testBasicMethods($client, $configuration)
+    public function testBasicMethods($configuration, $client)
     {
-        $connector = new Paypal_Connector($client, $configuration);
+        $connector = new Paypal_Connector($configuration, $client);
 
-        $this->assertEquals($connector->getClient(), $client);
         $this->assertEquals($connector->getConfiguration(), $configuration);
+        $this->assertInstanceof('Paypal_Client_Curl', $connector->getClient());
 
         $endpointUrl = $configuration->isSandbox()
                      ? Paypal_Connector::ENDPOINT_URL_SANDBOX
@@ -33,7 +33,7 @@ class Paypal_ConnectorTest extends PHPUnit_Framework_TestCase
                ->method('sendRequest')
                ->will($this->returnValue('ACK=Success&VERSION=50'));
 
-        $connector = new Paypal_Connector($client, new Paypal_Configuration('50.0'));
+        $connector = new Paypal_Connector(new Paypal_Configuration('50.0'), $client);
 
         $this->assertEquals(
             array(
@@ -58,15 +58,15 @@ class Paypal_ConnectorTest extends PHPUnit_Framework_TestCase
                ->method('sendRequest')
                ->will($this->returnValue('ACK=Failure&VERSION=50&L_ERRORCODE0=10000&L_SHORTMESSAGE0=SHORTMESSAGE&L_LONGMESSAGE0=MESSAGE&L_SEVERITYCODE0=ERROR'));
 
-        $connector = new Paypal_Connector($client, new Paypal_Configuration('50.0'));
+        $connector = new Paypal_Connector(new Paypal_Configuration('50.0'), $client);
         $connector->call('GetTransactionDetails', array('TransactionId' => '0123456789'));
     }
 
     public function stuffProvider()
     {
         return array(
-            array(new Paypal_Client_Curl(), new Paypal_Configuration('50.0', true)),
-            array(new Paypal_Client_Curl(), new Paypal_Configuration('50.0', false)),
+            array(new Paypal_Configuration('50.0', true), null),
+            array(new Paypal_Configuration('50.0', false), new Paypal_Client_Curl()),
         );
     }
 }

@@ -23,11 +23,11 @@ class Paypal_Connector
         ENDPOINT_URL_PRODUCTION = 'https://api-3t.paypal.com/nvp',
         ENDPOINT_URL_SANDBOX    = 'https://api-3t.sandbox.paypal.com/nvp';
 
-    /** @var Paypal_ClientInterface */
-    protected $client;
-
     /** @var Paypal_Configuration */
-    protected $configuration;
+    private $configuration;
+
+    /** @var Paypal_ClientInterface */
+    private $client;
 
     /**
      * Constructor.
@@ -35,30 +35,10 @@ class Paypal_Connector
      * @param Paypal_ClientInterface $client
      * @param Paypal_Configuration   $configuration
      */
-    public function __construct(Paypal_ClientInterface $client, Paypal_Configuration $configuration)
+    public function __construct(Paypal_Configuration $configuration, Paypal_ClientInterface $client = null)
     {
-        $this->client = $client;
         $this->configuration = $configuration;
-    }
-
-    /**
-     * Returns the client.
-     *
-     * @return Paypal_Configuration
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * Returns the configuration.
-     *
-     * @return Paypal_Configuration
-     */
-    public function getConfiguration()
-    {
-        return $this->configuration;
+        $this->client = $client ? $client : new Paypal_Client_Curl();
     }
 
     /**
@@ -110,5 +90,25 @@ class Paypal_Connector
         }
 
         return $data;
+    }
+
+    /**
+     * Returns the configuration.
+     *
+     * @return Paypal_Configuration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * Returns the client.
+     *
+     * @return Paypal_Configuration
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }
