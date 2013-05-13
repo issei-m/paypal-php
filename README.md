@@ -1,7 +1,7 @@
 PayPal API with PHP
 ===================
 
-PayPal API を PHP で操作する為のクラスです。
+PayPal API を PHP で操作する為のクラスです。  
 現在 NVP インターフェースのみの対応となっています。
 
 使い方
@@ -14,6 +14,7 @@ require __DIR__ . '/lib/Paypal.php';
 
 Paypal::registerAutoloader();
 
+// 第2引数をtrueでSANDBOXになります。
 $configuration = new Paypal_Configuration('Api version', true);
 $configuration->setUsername('Your user id')
               ->setPassword('Your password')
