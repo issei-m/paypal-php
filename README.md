@@ -26,3 +26,28 @@ $transactionData = $paypal->call('GetTransactionDetails', array(
     'TransactionID' => 'XXX',
 ));
 ```
+
+symfony 1.4 系で使用する
+------------------------
+
+lib/payment に`sfPaypal.class.php` (以下参照) を配置。  
+https://gist.github.com/issei-m/5589593
+
+settings.yml に以下追記。
+
+``` yaml
+paypal:
+  version: xxx
+  username: xxx
+  password: xxx
+  signature: xxx
+```
+
+使い方
+
+``` php
+$paypal = sfPaypal::getInstance();
+$transactionData = $paypal->call('GetTransactionDetails', array(
+    'TransactionID' => 'XXXXX',
+));
+```
